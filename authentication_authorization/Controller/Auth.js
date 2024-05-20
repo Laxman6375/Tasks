@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const User = require("../Models/User");
+const Session = require("../Models/sessions");
 const bcrypt = require("bcrypt");
 
 exports.signup = async (req, res) => {
@@ -64,18 +65,20 @@ exports.login = async (req, res) => {
     }
 
     if (await bcrypt.compare(password, user.password)) {
-      let token = user._id;
-      user = user.toObject();
-      user.token = token;
-      user.password = undefined;
+      let session = await Session.create({
+        userId: user._id,
+      });
+
+      let token = session._id;
+
       const options = {
         expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
         httpsOnly: true,
       };
       res.cookie("token", token, options).status(200).json({
         success: true,
-        token,
         user,
+        token,
         message: "User logged in successfully",
       });
     }

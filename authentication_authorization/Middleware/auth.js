@@ -1,4 +1,5 @@
 const User = require("../Models/User");
+const Session = require("../Models/sessions");
 const mongoose = require("mongoose");
 exports.auth = async (req, res, next) => {
   try {
@@ -21,7 +22,7 @@ exports.auth = async (req, res, next) => {
     }
 
     try {
-      let user = await User.findById(token);
+      let user = await Session.findById(token).populate("userId");
       if (!user) {
         return res.status(400).json({
           success: false,
@@ -47,7 +48,7 @@ exports.auth = async (req, res, next) => {
 
 exports.isUser = async (req, res, next) => {
   try {
-    if (req.user.role !== "User") {
+    if (req.user.userId.role !== "User") {
       return res.status(400).json({
         success: false,
         message: "This is a protected route for User",
@@ -64,7 +65,7 @@ exports.isUser = async (req, res, next) => {
 
 exports.isAdmin = async (req, res, next) => {
   try {
-    if (req.user.role !== "Admin") {
+    if (req.user.userId.role !== "Admin") {
       return res.status(400).json({
         success: false,
         message: "This is a protected route for Admin",
