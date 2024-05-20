@@ -22,7 +22,7 @@ exports.auth = async (req, res, next) => {
     }
 
     try {
-      let user = await Session.findById(token).populate("userId");
+      let user = await Session.findById(token).populate("userId").exec();
       if (!user) {
         return res.status(400).json({
           success: false,
