@@ -23,6 +23,7 @@ exports.auth = async (req, res, next) => {
 
     try {
       let user = await Session.findById(token).populate("userId").exec();
+
       if (!user) {
         return res.status(400).json({
           success: false,
@@ -30,7 +31,7 @@ exports.auth = async (req, res, next) => {
         });
       }
 
-      req.user = user;
+      req.user = user.userId;
       next();
     } catch (error) {
       return res.status(400).json({
@@ -48,7 +49,7 @@ exports.auth = async (req, res, next) => {
 
 exports.isUser = async (req, res, next) => {
   try {
-    if (req.user.userId.role !== "User") {
+    if (req.user.role !== "User") {
       return res.status(400).json({
         success: false,
         message: "This is a protected route for User",
@@ -65,7 +66,7 @@ exports.isUser = async (req, res, next) => {
 
 exports.isAdmin = async (req, res, next) => {
   try {
-    if (req.user.userId.role !== "Admin") {
+    if (req.user.role !== "Admin") {
       return res.status(400).json({
         success: false,
         message: "This is a protected route for Admin",

@@ -90,3 +90,62 @@ exports.login = async (req, res) => {
     });
   }
 };
+
+exports.suspendOwnAcc = async (req, res) => {
+  try {
+    const user = req.user;
+
+    if (user.suspended) {
+      return res.status(403).json({
+        success: false,
+        message: "Account is already suspended",
+      });
+    }
+
+    user.suspended = true;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Your account has been suspended",
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+exports.suspendOthersAcc = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (user.suspended) {
+      return res.status(403).json({
+        success: false,
+        message: "Account is already suspended",
+      });
+    }
+
+    (user.suspended = true), await user.save();
+    return res.status(200).json({
+      success: true,
+      message: `User ${user.username}'s A/c is suspended`,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

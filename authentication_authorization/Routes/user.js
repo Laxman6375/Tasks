@@ -1,11 +1,18 @@
 const express = require("express");
 const router = express.Router();
 
-const { signup, login } = require("../Controller/Auth");
+const {
+  signup,
+  login,
+  suspendOwnAcc,
+  suspendOthersAcc,
+} = require("../Controller/Auth");
 const { auth, isUser, isAdmin } = require("../Middleware/auth");
 
 router.post("/signup", signup);
 router.post("/login", login);
+router.post("/suspend", auth, suspendOwnAcc);
+router.post("/suspend/:id", auth, isAdmin, suspendOthersAcc);
 
 router.get("/test", auth, (req, res) => {
   res.json({
