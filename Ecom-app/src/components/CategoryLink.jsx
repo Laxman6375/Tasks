@@ -5,8 +5,9 @@ import { Link } from "react-router-dom";
 const CategoryLink = () => {
   const [isOpen, setIsOpen] = useState(false);
   const products = useSelector((state) => state.data);
+
   const category = [...new Set(products.map((prod) => prod.category))];
-  //  console.log(category);
+  // console.log(products);
 
   const handleDropDown = () => {
     setIsOpen(!isOpen);

@@ -5,6 +5,7 @@ import CategoryLink from "../CategoryLink";
 import Search from "../Search";
 import { products } from "../../redux/reducers/ecomSlice";
 import Navbar from "./Navbar";
+import { Outlet } from "react-router-dom";
 
 const Home = () => {
   const product = useSelector(products);
@@ -12,14 +13,8 @@ const Home = () => {
 
   return (
     <div>
-      {/* <Navbar /> */}
-      {product.length === 0 ? (
-        <div className=" flex justify-center items-center h-screen">
-          <h1>Products Not Found</h1>
-        </div>
-      ) : (
-        <Cards product={product} />
-      )}
+      <Navbar />
+      <Outlet />
     </div>
   );
 };
