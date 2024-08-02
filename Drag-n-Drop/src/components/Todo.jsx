@@ -64,28 +64,30 @@ const Todo = ({ todos, listId, listIndex }) => {
             <div
               draggable
               onDragStart={(e) => onDragStart(e, todo)}
-              className="flex justify-between items-center"
+              className="flex justify-between items-center bg-slate-800 px-2 py-1 text-white rounded-lg"
               key={todo.id}
             >
               <p>{todo.text}</p>
-              <button
-                className="px-2 py-1 bg-blue-600 text-white rounded-lg cursor-pointer"
-                onClick={() => handleMoveBackward(todo.id, todo.text)}
-              >
-                Back
-              </button>
-              <button
-                className="px-2 py-1 bg-blue-600 text-white rounded-lg cursor-pointer"
-                onClick={() => handleMoveForward(todo.id, todo.text)}
-              >
-                Next
-              </button>
-              <button
-                className="px-2 py-1 bg-red-700 text-white rounded-lg cursor-pointer"
-                onClick={() => handleRemoveTodo(todo.id)}
-              >
-                Delete
-              </button>
+              <div className=" flex items-center justify-center gap-2">
+                <button
+                  className="px-2 py-1 bg-blue-600 text-white rounded-lg cursor-pointer"
+                  onClick={() => handleMoveBackward(todo.id, todo.text)}
+                >
+                  Back
+                </button>
+                <button
+                  className="px-2 py-1 bg-blue-600 text-white rounded-lg cursor-pointer"
+                  onClick={() => handleMoveForward(todo.id, todo.text)}
+                >
+                  Next
+                </button>
+                <button
+                  className="px-2 py-1 bg-red-700 text-white rounded-lg cursor-pointer"
+                  onClick={() => handleRemoveTodo(todo.id)}
+                >
+                  Delete
+                </button>
+              </div>{" "}
             </div>
           ))}
       </div>
