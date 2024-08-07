@@ -8,6 +8,7 @@ const initialState = {
       todos: [
         {
           id: nanoid(),
+          tableId: 1,
           text: "text",
         },
       ],
@@ -21,11 +22,25 @@ const todoSlice = createSlice({
   reducers: {
     addTodo: (state, action) => {
       // console.log(action.payload);
-      const { listId, todo } = action.payload;
+      const { listId, todo, id, tableId, editText } = action.payload;
       const list = state.lists.find((list) => list.id === listId);
       // console.log(list);
       if (list) {
-        list.todos.push({ id: nanoid(), text: todo });
+        list.todos.push({
+          id: id,
+          tableId: tableId,
+          text: todo,
+        });
+      }
+    },
+    editTodo: (state, action) => {
+      console.log(action.payload);
+      const { listId, id, tableId, editText } = action.payload;
+      const list = state.lists.find((list) => list.id === listId);
+      // console.log(list);
+      if (list) {
+        const editListTodo = list.todos.find((todo) => todo.id === id);
+        editListTodo.text = editText;
       }
     },
     removeTodo: (state, action) => {
@@ -52,7 +67,9 @@ const todoSlice = createSlice({
   },
 });
 
-export const { addTodo, removeTodo, addTodoList, removeTodoList } =
+export const { addTodo, removeTodo, editTodo, addTodoList, removeTodoList } =
   todoSlice.actions;
+
+export const lists = (state) => state.lists;
 
 export default todoSlice.reducer;

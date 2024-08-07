@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addTodo,
   addTodoList,
+  lists as LT,
   removeTodo,
   removeTodoList,
 } from "../redux/reducers/todoSlice";
@@ -11,7 +12,8 @@ import Todo from "./Todo";
 const TodoList = () => {
   const [listName, setListName] = useState("");
   const dispatch = useDispatch();
-  const lists = useSelector((state) => state.lists);
+  const lists = useSelector(LT);
+
   //   console.log(lists);
 
   const handleOnchange = (e) => {
@@ -40,10 +42,13 @@ const TodoList = () => {
     dispatch(
       removeTodo({ todoId: sourceItem.id, listId: lists[sourceIndex].id })
     );
+
     dispatch(
       addTodo({
         todo: sourceItem.text,
         listId: lists[targetIndex].id,
+        id: sourceItem.id,
+        tableId: lists[targetIndex].id,
       })
     );
   };
@@ -73,7 +78,7 @@ const TodoList = () => {
                 <div
                   onDragOver={onDragOver}
                   onDrop={(e) => onDrop(e, index)}
-                  className={`p-4 border border-black w-72 ${
+                  className={`p-4 border border-black w-96 ${
                     onDragOver ? "" : ""
                   }`}
                   key={list.id}
