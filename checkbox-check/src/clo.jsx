@@ -1,19 +1,19 @@
 import { useState } from "react";
-
 import "./App.css";
 
-const initialCheckBoxList = [
-  [false, false, false, false],
-  [false, false, false, false],
-  [false, false, false, false],
-  [false, false, false, false],
-];
+// Function to generate the initial state
+const generateInitialCheckBoxList = (rows, cols) => {
+  return Array(rows)
+    .fill(null)
+    .map(() => Array(cols).fill(false));
+};
 
 function App() {
-  const [checkBoxList, setCheckBoxList] = useState(initialCheckBoxList);
+  const [checkBoxList, setCheckBoxList] = useState(
+    generateInitialCheckBoxList(4, 4)
+  );
 
   const handleCheckboxChange = (rowIndex, colIndex, e) => {
-    console.log(rowIndex, colIndex);
     const newChecked = checkBoxList.map((row, rIdx) =>
       row.map((col, cIdx) =>
         rowIndex === rIdx && colIndex === cIdx ? e.target.checked : col
@@ -23,13 +23,13 @@ function App() {
     if (rowIndex === 0 && colIndex === 0) {
       const newState = newChecked[0][0];
       for (let i = 0; i < newChecked.length; i++) {
-        for (let j = 0; j < newChecked.length; j++) {
+        for (let j = 0; j < newChecked[i].length; j++) {
           newChecked[i][j] = newState;
         }
       }
     } else if (colIndex === 0) {
       const newState = newChecked[rowIndex][0];
-      for (let i = 0; i < newChecked.length; i++) {
+      for (let i = 0; i < newChecked[rowIndex].length; i++) {
         newChecked[rowIndex][i] = newState;
       }
     } else if (rowIndex === 0) {
@@ -39,40 +39,33 @@ function App() {
       }
     }
 
-    const allFirstColumnChecked = [1, 2, 3].every((i) => newChecked[i][1]);
-    const allSecondColumnChecked = [1, 2, 3].every((i) => newChecked[i][2]);
-    const allThirdColumnChecked = [1, 2, 3].every((i) => newChecked[i][3]);
+    const allRowsChecked = (row) =>
+      row.slice(1).every((checked) => checked === true);
+    const allColsChecked = (colIndex) =>
+      newChecked.slice(1).every((row) => row[colIndex] === true);
 
-    // console.log(newChecked);
-
-    const allFirstRowChecked = [1, 2, 3].every((i) => newChecked[1][i]);
-    const allSecondRowChecked = [1, 2, 3].every((i) => newChecked[2][i]);
-    const allThirdRowChecked = [1, 2, 3].every((i) => newChecked[3][i]);
-
-    newChecked[0][1] = allFirstColumnChecked;
-    newChecked[0][2] = allSecondColumnChecked;
-    newChecked[0][3] = allThirdColumnChecked;
-
-    newChecked[1][0] = allFirstRowChecked;
-    newChecked[2][0] = allSecondRowChecked;
-    newChecked[3][0] = allThirdRowChecked;
-
-    if (
-      allFirstColumnChecked &&
-      allSecondColumnChecked &&
-      allThirdColumnChecked &&
-      allFirstRowChecked &&
-      allSecondRowChecked &&
-      allThirdRowChecked
-    ) {
-      newChecked[0][0] = true;
-      console.log(newChecked[0][0]);
-    } else {
-      newChecked[0][0] = false;
-      console.log(newChecked[0][0]);
+    for (let i = 1; i < newChecked.length; i++) {
+      newChecked[i][0] = allRowsChecked(newChecked[i]);
+    }
+    for (let j = 1; j < newChecked[0].length; j++) {
+      newChecked[0][j] = allColsChecked(j);
     }
 
+    const allChecked =
+      newChecked.slice(1).every((row) => row.slice(1).every(Boolean)) &&
+      newChecked[0].slice(1).every(Boolean);
+
+    newChecked[0][0] = allChecked;
+
     setCheckBoxList(newChecked);
+  };
+
+  const addRow = () => {
+    setCheckBoxList((prev) => [...prev, Array(prev[0].length).fill(false)]);
+  };
+
+  const addColumn = () => {
+    setCheckBoxList((prev) => prev.map((row) => [...row, false]));
   };
 
   return (
@@ -92,6 +85,20 @@ function App() {
           ))}
         </div>
       ))}
+      <div className="flex gap-4">
+        <button
+          onClick={addRow}
+          className="px-4 py-2 bg-blue-500 text-white rounded"
+        >
+          Add Row
+        </button>
+        <button
+          onClick={addColumn}
+          className="px-4 py-2 bg-green-500 text-white rounded"
+        >
+          Add Column
+        </button>
+      </div>
     </div>
   );
 }
